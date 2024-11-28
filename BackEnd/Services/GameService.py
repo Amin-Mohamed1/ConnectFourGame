@@ -28,8 +28,8 @@ class GameService:
         def score(board_state: list[list[str]], current_piece: str, row_number: int, column_number: int,
                   direction: int) -> int:
             for i in range(1 * direction, 4 * direction, 1 * direction):
-                if not GameService.__is_valid_column(board_state, column_number + i) or board_state[row_number][
-                    column_number + i] != current_piece:
+                if (not GameService.__is_valid_column(board_state, column_number + i)
+                        or board_state[row_number][column_number + i] != current_piece):
                     return 0
             return 1
 
@@ -40,8 +40,8 @@ class GameService:
         def score(board_state: list[list[str]], current_piece: str, row_number: int, column_number: int,
                   direction: int) -> int:
             for i in range(1 * direction, 4 * direction, 1 * direction):
-                if not GameService.__is_valid_row(board_state, row_number + i) or board_state[row_number + i][
-                    column_number] != current_piece:
+                if (not GameService.__is_valid_row(board_state, row_number + i)
+                        or board_state[row_number + i][column_number] != current_piece):
                     return 0
             return 1
 
@@ -73,3 +73,17 @@ class GameService:
     @staticmethod
     def __is_valid_row(board: list[list[str]], row: int) -> bool:
         return 0 <= row < len(board)
+
+    @staticmethod
+    def get_valid_moves(board: list[list[str]]) -> list[int]:
+        valid_moves = []
+        for col in range(len(board[0])):
+            if board[0][col] == '':
+                valid_moves.append(col)
+        return valid_moves
+
+    @staticmethod
+    def get_board_after_move(board: list[list[str]], column: int, piece: str) -> list[list[str]]:
+        new_board = [row[:] for row in board]
+        GameService.insert_piece(new_board, column, piece)
+        return new_board  

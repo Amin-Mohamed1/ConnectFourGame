@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+}
+
+body {
+    background-color: #050316;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    text-align: center;
+}
+
+h1 {
+    color: #F8F8FC;
+    margin-bottom: 1rem;
+}
+
+a {
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+}
+
+h1.title {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: #FFD634;
+}
+
+h1.subtitle {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #FFD634;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    color: #F8F8FC;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    filter: brightness(0.9);
+}
+
+.btn-pvp {
+    background-color: #E94949;
+}
+
+.btn-ai {
+    background-color: #2F27CE;
+}
+
+.btn-expectiminimax {
+    background-color: #050316;
+    border: 5px solid #FFD634;
+}
+
+.game-board {
+    display: inline-grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #2F27CE;
+    border-radius: 8px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #050316;
+    border: 2px solid #2F27CE;
+    cursor: pointer;
+}
+
+.cell.hovered-column {
+    background-color: rgb(40, 38, 38);
+}
+
+.cell.player1 {
+    background-color: #E94949;
+}
+
+.cell.player2 {
+    background-color: #FFD634;
+}
+
+.bottom-image {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
