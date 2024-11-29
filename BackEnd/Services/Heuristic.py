@@ -8,6 +8,14 @@ from Services.HeuristicCriterias.SinglePiecePosition import count_pieces_in_midd
 def get_opponent_piece(piece) -> str:
     return 'r' if piece == 'y' else 'y'
 
+def get_heuristic_value_2(board: list[list[str]], piece: str, is_full_board: bool) -> int:
+    if is_full_board:
+        already_connected_fours_count_piece: int = count_connected_fours(board, piece)
+        already_connected_fours_count_opponent: int = count_connected_fours(board, get_opponent_piece(piece))
+        return (already_connected_fours_count_piece - already_connected_fours_count_opponent) * 2_000
+    else:
+        return get_heuristic_value(board, piece)
+
 
 def get_heuristic_value(board: list[list[str]], piece: str) -> int:
     already_connected_fours_count_piece: int = count_connected_fours(board, piece)

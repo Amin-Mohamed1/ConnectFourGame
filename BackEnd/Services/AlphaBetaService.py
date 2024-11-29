@@ -1,7 +1,7 @@
 from abc import ABC
-from BackEnd.Services.GameService import GameService
-from BackEnd.Services.Heuristic import get_heuristic_value
-from BackEnd.Services.Solver import Solver
+from Services.GameService import GameService
+from Services.Heuristic import get_heuristic_value
+from Services.Solver import Solver
 
 
 class Node:
