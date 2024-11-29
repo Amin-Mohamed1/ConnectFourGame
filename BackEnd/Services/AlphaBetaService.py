@@ -12,9 +12,18 @@ class Node:
         self.is_maximizing_player = is_maximizing_player
         self.children = []
         self.evaluation = None
+        self.best_child_column = -1
 
     def __repr__(self):
         return f"Move: {self.move}, Depth: {self.depth}, Evaluation: {self.evaluation}"
+
+    def to_dict(self) -> dict:
+        return {
+            'column': -1 if self.move is None else self.move,
+            'value': self.evaluation,
+            'best_child_column': self.best_child_column,
+            'children': [child.to_dict() for child in self.children]
+        }
 
 
 class AlphaBetaService(Solver, ABC):
@@ -48,7 +57,9 @@ class AlphaBetaService(Solver, ABC):
                 max_eval = float('-inf')
                 for child in node.children:
                     eval = minimax(child, alpha, beta)
-                    max_eval = max(max_eval, eval)
+                    if eval > max_eval:
+                        max_eval = eval
+                        node.best_child_column = child.move
                     alpha = max(alpha, eval)
                     if alpha >= beta:
                         break
@@ -60,7 +71,9 @@ class AlphaBetaService(Solver, ABC):
                 min_eval = float('inf')
                 for child in node.children:
                     eval = minimax(child, alpha, beta)
-                    min_eval = min(min_eval, eval)
+                    if eval < min_eval:
+                        min_eval = eval
+                        node.best_child_column = child.move
                     beta = min(beta, eval)
                     if alpha >= beta:
                         break
@@ -83,12 +96,12 @@ def array_to_string(board: list[list[str]]) -> str:
 
 def main():
     board = [
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['y', 'y', 'y', '', '', '', ''],
-        ['r', 'r', 'r', '', '', '', '']
+        ['r', 'r', '', '', '', '', ''],
+        ['r', 'r', '', 'r', 'r', '', ''],
+        ['r', 'y', '', 'y', 'y', '', ''],
+        ['y', 'y', '', 'r', 'r', 'r', 'r'],
+        ['y', 'y', 'y', 'y', 'r', 'y', 'r'],
+        ['r', 'r', 'r', 'r', 'y', 'y', 'y']
     ]
 
     piece = 'y'

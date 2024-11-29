@@ -68,5 +68,5 @@ if __name__ == '__main__':
         ['', '', 'r', 'r', 'r', '', '']
     ]
 
-    best_move = MinMaxService.solve(board, 'y', 5)
+    best_move = MinMaxService.solve(board, 'y', 6)
     print(best_move)
