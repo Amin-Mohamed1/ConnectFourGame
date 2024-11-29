@@ -1,123 +1,87 @@
 from abc import ABC
 from Services.GameService import GameService
-from Services.Heuristic import get_heuristic_value
+from Services.Node import Node
 from Services.Solver import Solver
-
-
-class Node:
-    def __init__(self, board: list[list[str]], move: int, depth: int, is_maximizing_player: bool):
-        self.board = [row[:] for row in board]
-        self.move = move
-        self.depth = depth
-        self.is_maximizing_player = is_maximizing_player
-        self.children = []
-        self.evaluation = None
-        self.best_child_column = -1
-
-    def __repr__(self):
-        return f"Move: {self.move}, Depth: {self.depth}, Evaluation: {self.evaluation}"
-
-    def to_dict(self) -> dict:
-        return {
-            'column': -1 if self.move is None else self.move,
-            'value': self.evaluation,
-            'best_child_column': self.best_child_column,
-            'children': [child.to_dict() for child in self.children]
-        }
+from Services.Heuristic import get_heuristic_value_2 as h
+from Services.Heuristic import get_opponent_piece
 
 
 class AlphaBetaService(Solver, ABC):
-    memo = {}
-
+    num_nodes = 0
     @staticmethod
     def solve(board: list[list[str]], piece: str, max_depth: int) -> int:
-        def minimax(node: Node, alpha: float, beta: float) -> int:
-            board_key = array_to_string(node.board)
-            print(board_key)
+        root: Node = Node(-1)  # root node
+        AlphaBetaService.__maximize(board, piece, max_depth, root, float("-inf"), float("inf"))
+        print(AlphaBetaService.num_nodes)
+        return root.get_best_child_column()
 
-            if board_key in AlphaBetaService.memo:
-                return AlphaBetaService.memo[board_key]
+    @staticmethod
+    def __maximize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float, beta: float) -> None:
+        AlphaBetaService.num_nodes += 1
+        if GameService.is_full_board(board):
+            parent_node.set_value(h(board, piece, True))
+            return
+        if depth == 0:
+            parent_node.set_value(h(board, piece, False))
+            return
+        max_value: float = float('-inf')
+        for col in range(len(board[0])):
+            if GameService.is_valid_move(board, col):
+                row: int = GameService.insert_piece(board, col, piece)
+                child_node: Node = Node(col)
+                parent_node.add_child(child_node)
+                AlphaBetaService.__minimize(board, piece, depth - 1, child_node, alpha, beta)
+                if child_node.get_value() > max_value:
+                    max_value = child_node.get_value()
+                    parent_node.set_value(max_value)
+                    parent_node.set_best_child_column(col)
+                board[row][col] = ''
 
-            if node.depth == max_depth or GameService.is_full_board(node.board):
-                # Evaluate the board if it's a leaf node or if we've reached max depth
-                node.evaluation = get_heuristic_value(node.board, piece)
-                AlphaBetaService.memo[board_key] = node.evaluation  # Cache the result
-                return node.evaluation
-
-            # Generate child nodes
-            possible_moves = GameService.get_valid_moves(node.board)
-            for move in possible_moves:
-                child_board = GameService.get_board_after_move(node.board, move, piece)
-                child_is_maximizing = not node.is_maximizing_player
-                child_node = Node(child_board, move, node.depth + 1, child_is_maximizing)
-                node.children.append(child_node)
-
-            # Perform Minimax on each child and apply Alpha-Beta Pruning
-            if node.is_maximizing_player:
-                max_eval = float('-inf')
-                for child in node.children:
-                    eval = minimax(child, alpha, beta)
-                    if eval > max_eval:
-                        max_eval = eval
-                        node.best_child_column = child.move
-                    alpha = max(alpha, eval)
-                    if alpha >= beta:
-                        break
-                node.evaluation = max_eval
-                AlphaBetaService.memo[board_key] = max_eval  # Cache the result
-                return max_eval
-
-            else:
-                min_eval = float('inf')
-                for child in node.children:
-                    eval = minimax(child, alpha, beta)
-                    if eval < min_eval:
-                        min_eval = eval
-                        node.best_child_column = child.move
-                    beta = min(beta, eval)
-                    if alpha >= beta:
-                        break
-
-                node.evaluation = min_eval
-                AlphaBetaService.memo[board_key] = min_eval
-                return min_eval
-
-        # Initialize the root node
-        root_node = Node(board, None, 0, True)
-        # Perform Minimax with Alpha-Beta Pruning
-        minimax(root_node, float('-inf'), float('inf'))
-        best_move = max(root_node.children, key=lambda child: child.evaluation)
-        return best_move.move
+                if max_value >= beta:
+                    break
+                if max_value > alpha:
+                    alpha = max_value
 
 
-def array_to_string(board: list[list[str]]) -> str:
-    return "\n".join(" ".join(row) for row in board)
+
+    @staticmethod
+    def __minimize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float, beta: float) -> None:
+        AlphaBetaService.num_nodes += 1
+        if GameService.is_full_board(board):
+            parent_node.set_value(h(board, piece, True))
+            return
+        if depth == 0:
+            parent_node.set_value(h(board, piece, False))
+            return
+
+        min_value: float = float('-inf')
+        for col in range(len(board[0])):
+            if GameService.is_valid_move(board, col):
+                row: int = GameService.insert_piece(board, col, get_opponent_piece(piece))
+                child_node: Node = Node(col)
+                parent_node.add_child(child_node)
+                AlphaBetaService.__maximize(board, piece, depth - 1, child_node, alpha, beta)
+                if child_node.get_value() < min_value:
+                    min_value = child_node.get_value()
+                    parent_node.set_value(min_value)
+                    parent_node.set_best_child_column(col)
+                board[row][col] = ''
+
+                if min_value <= alpha:
+                    break
+                if min_value < beta:
+                    beta = min_value
 
 
-def main():
+if __name__ == '__main__':
     board = [
-        ['r', 'r', '', '', '', '', ''],
-        ['r', 'r', '', 'r', 'r', '', ''],
-        ['r', 'y', '', 'y', 'y', '', ''],
-        ['y', 'y', '', 'r', 'r', 'r', 'r'],
-        ['y', 'y', 'y', 'y', 'r', 'y', 'r'],
-        ['r', 'r', 'r', 'r', 'y', 'y', 'y']
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "y", "", "", "", "", ""],
+        ["", "r", "", "y", "", "r", ""],
+        ["y", "r", "r", "r", "y", "y", ""],
     ]
 
-    piece = 'y'
-    max_depth = 1
-    print("Current board:")
-    for row in board:
-        print(row)
-
-    best_move = AlphaBetaService.solve(board, piece, max_depth)
-    print(f"The best column for player {piece} to play is: {best_move}")
-
-    row_to_insert = GameService.insert_piece(board, best_move, piece)
-    print(f"After the move, the board is:")
-    for row in board:
-        print(row)
-
-
-if __name__ == "__main__":
-    main()
+    best_move = AlphaBetaService.solve(board, 'r', 6)
+    print(best_move)
