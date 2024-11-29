@@ -8,15 +8,17 @@ from Services.Heuristic import get_opponent_piece
 
 class AlphaBetaService(Solver, ABC):
     num_nodes = 0
+
     @staticmethod
-    def solve(board: list[list[str]], piece: str, max_depth: int) -> int:
+    def solve(board: list[list[str]], piece: str, max_depth: int) -> Node:
         root: Node = Node(-1)  # root node
         AlphaBetaService.__maximize(board, piece, max_depth, root, float("-inf"), float("inf"))
         print(AlphaBetaService.num_nodes)
-        return root.get_best_child_column()
+        return root
 
     @staticmethod
-    def __maximize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float, beta: float) -> None:
+    def __maximize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float,
+                   beta: float) -> None:
         AlphaBetaService.num_nodes += 1
         if GameService.is_full_board(board):
             parent_node.set_value(h(board, piece, True))
@@ -42,10 +44,9 @@ class AlphaBetaService(Solver, ABC):
                 if max_value > alpha:
                     alpha = max_value
 
-
-
     @staticmethod
-    def __minimize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float, beta: float) -> None:
+    def __minimize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float,
+                   beta: float) -> None:
         AlphaBetaService.num_nodes += 1
         if GameService.is_full_board(board):
             parent_node.set_value(h(board, piece, True))
@@ -83,5 +84,5 @@ if __name__ == '__main__':
         ["y", "r", "r", "r", "y", "y", ""],
     ]
 
-    best_move = AlphaBetaService.solve(board, 'r', 6)
+    best_move = AlphaBetaService.solve(board, 'r', 6).get_best_child_column()
     print(best_move)

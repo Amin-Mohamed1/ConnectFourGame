@@ -10,10 +10,10 @@ from Services.Heuristic import get_opponent_piece
 
 class MinMaxService(Solver, ABC):
     @staticmethod
-    def solve(board: list[list[str]], piece: str, max_depth: int) -> int:
+    def solve(board: list[list[str]], piece: str, max_depth: int) -> Node:
         root: Node = Node(-1)  # root node
         MinMaxService.__maximize(board, piece, max_depth, root)
-        return root.get_best_child_column()
+        return root
 
     @staticmethod
     def __maximize(board: list[list[str]], piece: str, depth: int, parent_node: Node) -> None:
@@ -24,6 +24,7 @@ class MinMaxService(Solver, ABC):
             parent_node.set_value(h(board, piece, False))
             return
         max_value: int = -maxsize - 1
+        parent_node.set_value(max_value)
         for col in range(len(board[0])):
             if GameService.is_valid_move(board, col):
                 row: int = GameService.insert_piece(board, col, piece)
@@ -45,6 +46,7 @@ class MinMaxService(Solver, ABC):
             parent_node.set_value(h(board, piece, False))
             return
         min_value: int = maxsize
+        parent_node.set_value(min_value)
         for col in range(len(board[0])):
             if GameService.is_valid_move(board, col):
                 row: int = GameService.insert_piece(board, col, get_opponent_piece(piece))
@@ -60,13 +62,13 @@ class MinMaxService(Solver, ABC):
 
 if __name__ == '__main__':
     board = [
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', 'y', '', '', ''],
-        ['', '', 'r', 'r', 'r', '', '']
+        ['r', 'y', 'r', 'y', 'y', 'y', ''],
+        ['r', 'r', 'y', 'r', 'r', 'r', 'r'],
+        ['r', 'y', 'r', 'y', 'y', 'y', 'y'],
+        ['y', 'y', 'r', 'r', 'r', 'r', 'r'],
+        ['y', 'y', 'y', 'y', 'r', 'y', 'r'],
+        ['r', 'r', 'r', 'r','y','y','y']
     ]
 
-    best_move = MinMaxService.solve(board, 'y', 6)
+    best_move = MinMaxService.solve(board, 'y', 10).get_best_child_column()
     print(best_move)
