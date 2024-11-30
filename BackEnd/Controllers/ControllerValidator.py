@@ -44,7 +44,7 @@ def validate_score_request(data) -> bool:
 def validate_method(method: str) -> bool:
     if not isinstance(method, str):
         return False
-    if method not in ['AlphaBeta', 'MinMax', 'ExpectiMinMax']:
+    if method not in ['AlphaBeta', 'MinMax', 'ExpectiiMinMax']:
         return False
     return True
 
