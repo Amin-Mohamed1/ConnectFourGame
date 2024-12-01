@@ -14,6 +14,7 @@ class AlphaBetaService(Solver, ABC):
     def solve(board: list[list[str]], piece: str, max_depth: int) -> Node:
         root: Node = Node(-1)
         AlphaBetaService.__maximize(board, piece, max_depth, root, float("-inf"), float("inf"))
+        root.set_num_nodes_expanded(AlphaBetaService.num_nodes)
         return root
 
     @staticmethod
@@ -21,7 +22,7 @@ class AlphaBetaService(Solver, ABC):
                    parent_node: Node, alpha: float,
                    beta: float) -> None:
         AlphaBetaService.num_nodes += 1
-        board_tuple = tuple(tuple(row) for row in board)
+        board_tuple = GameService.convert_board_to_string(board)
         if board_tuple in AlphaBetaService.board_cache:
             parent_node.set_value(AlphaBetaService.board_cache[board_tuple])
             return
@@ -63,7 +64,7 @@ class AlphaBetaService(Solver, ABC):
     def __minimize(board: list[list[str]], piece: str, depth: int, parent_node: Node, alpha: float,
                    beta: float) -> None:
         AlphaBetaService.num_nodes += 1
-        board_tuple = tuple(tuple(row) for row in board)
+        board_tuple = GameService.convert_board_to_string(board)
         if board_tuple in AlphaBetaService.board_cache:
             parent_node.set_value(AlphaBetaService.board_cache[board_tuple])
             return
