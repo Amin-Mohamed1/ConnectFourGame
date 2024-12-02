@@ -87,3 +87,7 @@ class GameService:
         new_board = [row[:] for row in board]
         GameService.insert_piece(new_board, column, piece)
         return new_board  
+
+    @staticmethod
+    def convert_board_to_string(board: list[list[str]]) ->str:
+        return "\n".join(" ".join(cell if cell else "." for cell in row) for row in board)

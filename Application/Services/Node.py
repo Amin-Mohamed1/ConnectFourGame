@@ -2,8 +2,9 @@ class Node:
     def __init__(self, column: int):
         self.__column: int = column
         self.__children: list[Node] = []
-        self.__value: int = 0
+        self.__value: float = 0
         self.__best_child_column: int = -1
+        self.__nods_expanded: int = 0
 
     def add_child(self, child: 'Node') -> None:
         self.__children.append(child)
@@ -14,10 +15,10 @@ class Node:
     def get_column(self) -> int:
         return self.__column
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: float) -> None:
         self.__value = value
 
-    def get_value(self) -> int:
+    def get_value(self) -> float:
         return self.__value
 
     def set_best_child_column(self, column: int) -> None:
@@ -25,6 +26,12 @@ class Node:
 
     def get_best_child_column(self) -> int:
         return self.__best_child_column
+
+    def get_num_nodes_expanded(self) -> int:
+        return self.__nods_expanded
+
+    def set_num_nodes_expanded(self, num_nodes: int) -> None:
+        self.__nods_expanded = num_nodes
 
     def to_dict(self) -> dict:
         return {

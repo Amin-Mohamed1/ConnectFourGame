@@ -14,7 +14,7 @@ class AIModule:
         elif method == 'MinMax':
             self.__root = MinMaxService.solve(board, piece, max_depth)
             return self.__root.get_best_child_column()
-        elif method == 'ExpectiMinMax':
+        elif method == 'ExpectiiMinMax':
             return 0
         else:
             return -1
