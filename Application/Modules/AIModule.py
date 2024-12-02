@@ -1,5 +1,6 @@
 from Services.AlphaBetaService import AlphaBetaService
 from Services.MinMaxService import MinMaxService
+from Services.ExpectiMiniMaxService import ExpectiMinimaxService
 from Services.Node import Node
 
 
@@ -14,8 +15,9 @@ class AIModule:
         elif method == 'MinMax':
             self.__root = MinMaxService.solve(board, piece, max_depth)
             return self.__root.get_best_child_column()
-        elif method == 'ExpectiiMinMax':
-            return 0
+        elif method == 'ExpectiMinMax':
+            self.__root = ExpectiMinimaxService.solve(board, piece, max_depth)
+            return self.__root.get_best_child_column()
         else:
             return -1
 

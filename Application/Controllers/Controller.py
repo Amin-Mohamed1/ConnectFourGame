@@ -29,6 +29,6 @@ def ai():
     method = data['method']
     return jsonify({'position': ai_module.get_action(board, piece, max_depth, method)})
 
-@main_routes.route('/tree', methods=['POST'])
+@main_routes.route('/tree', methods=['GET'])
 def tree():
     return jsonify({'tree': ai_module.get_root().to_dict()})

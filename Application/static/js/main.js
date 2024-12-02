@@ -1,6 +1,7 @@
 import { renderHome } from './views/home.js';
 import { renderAISelection } from './views/aiSelection.js';
 import { renderGame } from './views/game.js';
+import { renderSearchTree } from './views/searchTree.js';
 
 const app = document.getElementById('app');
 
@@ -19,6 +20,9 @@ function router() {
             break;
         case '#/game':
             renderGame(app, method);
+            break;
+        case '#/search-tree':
+            renderSearchTree(app);
             break;
         default:
             renderHome(app);

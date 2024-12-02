@@ -5,7 +5,7 @@ export function renderGame(container, method) {
     let value1 = 0;
     let value2 = 0;
     let board = Array(rows).fill().map(() => Array(cols).fill(0));
-    let maxDepth = 1
+    let maxDepth = 4
 
     function createBoard() {
         let boardHTML = '<div class="game-board">';
@@ -18,20 +18,24 @@ export function renderGame(container, method) {
         return boardHTML;
     }
 
-    function handleCellClick(event) {
+    async function handleCellClick(event) {
+        console.log(currentPlayer);
+
         const col = parseInt(event.target.dataset.col);
         if (!isValidMove(col)) return;
-
+    
         const row = getLowestEmptyRow(col);
-
-        getScore(col)
-
+    
+        await getScore(col);
+                
         makeMove(row, col);
         updateBoard();
-
-        if(method != 0){
-            triggerAi()
+    
+        console.log(currentPlayer)
+        if (method != 0) {
+            await triggerAi();
         }
+        console.log(currentPlayer);
     }
 
     async function triggerAi() {
@@ -41,6 +45,7 @@ export function renderGame(container, method) {
             max_depth: maxDepth,
             method: convertMethodToStringFormat(method)
         };
+        console.log(requestData)
     
         try {
             const response = await fetch('http://127.0.0.1:5000/ai', {
@@ -59,14 +64,14 @@ export function renderGame(container, method) {
             const data = await response.json();
     
             const col = data.position;
+            console.log("columnnn: "+col)
 
-            if (!isValidMove(col)) return;
+            // console.log(isValidMove(col))
+            // if (!isValidMove(col)) return;
             const row = getLowestEmptyRow(col);
-            getScore(col)
+            await getScore(col)
             makeMove(row, col);
             updateBoard();
-
-            console.log('AI Position:', col);
 
         } catch (error) {
             console.error('Error making AI request:', error);
@@ -117,6 +122,26 @@ export function renderGame(container, method) {
         }
     }
 
+    async function getTree() {
+        try {
+            const response = await fetch('/tree', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('Tree:', data.tree); // Process the tree data as needed
+        } catch (error) {
+            console.error('Error fetching tree:', error);
+        }
+    }
+
     function isValidMove(col) {
         return board[0][col] === 0;
     }
@@ -129,6 +154,8 @@ export function renderGame(container, method) {
     }
 
     function makeMove(row, col) {
+        console.log("row: "+row)
+        console.log("col: "+col)
         board[row][col] = currentPlayer;
         currentPlayer = currentPlayer === 1 ? 2 : 1;
     }
@@ -170,11 +197,11 @@ export function renderGame(container, method) {
 
     function convertMethodToStringFormat(method) {
         if(method == 1) {
-            return "MinMax";
+            return 'MinMax';
         } else if(method == 2) {
-            return "AlphaBeta";
+            return 'AlphaBeta';
         } else if(method == 3) {
-            return "ExpectiiMinMax";
+            return 'ExpectiMinMax';
         }
     }
 
@@ -191,7 +218,12 @@ export function renderGame(container, method) {
                 <h1 id="player2-score" style="color: #FFD634;">AI Score: ${value2}</h1>`
             }
             </div>
-            <a class="btn btn-gold">Show Search Tree</a>
+            ${
+                method != 0
+                ? `
+                <a href="#/search-tree" class="btn btn-gold">Show Search Tree</a>`
+                : ``
+            }
         </div>
 
         ${createBoard()}
@@ -203,4 +235,5 @@ export function renderGame(container, method) {
         cell.addEventListener('mouseenter', handleCellHover);
         cell.addEventListener('mouseleave', handleCellHoverOut);
     });
+    
 }
