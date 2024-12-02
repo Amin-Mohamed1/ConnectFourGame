@@ -26,7 +26,7 @@ def validate_piece(piece: str) -> bool:
 def validate_score_json(data) -> bool:
     if data is None:
         return False
-    if 'board' not in data or 'piece' not in data or 'position' not in data:
+    if 'board' not in data or 'piece' not in data:
         return False
     return True
 
@@ -36,8 +36,6 @@ def validate_score_request(data) -> bool:
     if not validate_board(data['board']):
         return False
     if not validate_piece(data['piece']):
-        return False
-    if not validate_position(data['board'], data['position']):
         return False
     return True
 

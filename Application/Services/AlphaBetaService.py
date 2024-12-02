@@ -15,6 +15,8 @@ class AlphaBetaService(Solver, ABC):
         root: Node = Node(-1)
         AlphaBetaService.__maximize(board, piece, max_depth, root, float("-inf"), float("inf"))
         root.set_num_nodes_expanded(AlphaBetaService.num_nodes)
+        AlphaBetaService.board_cache.clear()
+        AlphaBetaService.num_nodes = 0
         return root
 
     @staticmethod

@@ -16,6 +16,8 @@ class MinMaxService(Solver, ABC):
         root: Node = Node(-1)
         MinMaxService.__maximize(board, piece, max_depth, root)
         root.set_num_nodes_expanded(MinMaxService.num_nodes)
+        MinMaxService.board_cache.clear()
+        MinMaxService.num_nodes = 0
         return root
 
     @staticmethod

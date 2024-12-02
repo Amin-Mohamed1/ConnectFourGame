@@ -8,7 +8,7 @@ from Services.Node import Node
 from Services.Solver import Solver
 from Services.Heuristic import get_heuristic_value_2 as h
 from Services.Heuristic import get_opponent_piece
-
+from Services.HeuristicCriterias.AlreadyConnectedFours import count_connected_fours
 
 class ExpectiMinimaxService(Solver, ABC):
     num_nodes = 0
@@ -19,6 +19,8 @@ class ExpectiMinimaxService(Solver, ABC):
         root: Node = Node(-1)
         ExpectiMinimaxService.__maximize(board, piece, max_depth, root)
         root.set_num_nodes_expanded(ExpectiMinimaxService.num_nodes)
+        ExpectiMinimaxService.board_cache.clear()
+        ExpectiMinimaxService.num_nodes = 0
         return root
 
     @staticmethod
@@ -156,32 +158,35 @@ class ExpectiMinimaxService(Solver, ABC):
 if __name__ == '__main__':
     board = [
         ["", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", ""]
+        ["", "y", "", "r", "y", "r", ""],
+        ["", "y", "", "r", "y", "r", ""],
+        ["", "y", "y", "y", "y", "r", ""],
+        ["", "y", "r", "r", "y", "r", ""],
+        ["", "y", "r", "r", "r", "y", "r"]
     ]
-
-    print("Starting ExpectiMinimaxService...")
-    start_time = time.time()
-    best_move1 = ExpectiMinimaxService.solve(board, 'y', 8)
-    print(f"ExpectiMinimaxService - Nodes expanded: {ExpectiMinimaxService.num_nodes}")
-    print(f"Time taken: {time.time() - start_time:.4f} seconds")
-
-    print("\nStarting AlphaBetaService...")
-    start_time = time.time()
-    best_move2 = AlphaBetaService.solve(board, 'y', 8)
-    print(f"AlphaBetaService - Nodes expanded: {AlphaBetaService.num_nodes}")
-    print(f"Time taken: {time.time() - start_time:.4f} seconds")
-
-    print("\nStarting MinMaxService...")
-    start_time = time.time()
-    best_move3 = MinMaxService.solve(board, 'y', 9)
-    print(f"MinMaxService - Nodes expanded: {MinMaxService.num_nodes}")
-    print(f"Time taken: {time.time() - start_time:.4f} seconds")
-
-    # Printing best moves for comparison
-    print(f"\nBest Move Column (ExpectiMinimax, AlphaBeta, MinMax): {best_move1.get_best_child_column()}, {best_move2.get_best_child_column()}, {best_move3.get_best_child_column()}")
-    print("Alpha-Beta value ="+str(best_move2.get_value()))
-    print("MinMax value ="+str(best_move3.get_value()))
+    score = count_connected_fours(board, 'y')
+    score2 = count_connected_fours(board, 'r')
+    print(score)
+    print(score2)
+    # print("Starting ExpectiMinimaxService...")
+    # start_time = time.time()
+    # best_move1 = ExpectiMinimaxService.solve(board, 'y', 8)
+    # print(f"ExpectiMinimaxService - Nodes expanded: {ExpectiMinimaxService.num_nodes}")
+    # print(f"Time taken: {time.time() - start_time:.4f} seconds")
+    #
+    # print("\nStarting AlphaBetaService...")
+    # start_time = time.time()
+    # best_move2 = AlphaBetaService.solve(board, 'y', 8)
+    # print(f"AlphaBetaService - Nodes expanded: {AlphaBetaService.num_nodes}")
+    # print(f"Time taken: {time.time() - start_time:.4f} seconds")
+    #
+    # print("\nStarting MinMaxService...")
+    # start_time = time.time()
+    # best_move3 = MinMaxService.solve(board, 'y', 9)
+    # print(f"MinMaxService - Nodes expanded: {MinMaxService.num_nodes}")
+    # print(f"Time taken: {time.time() - start_time:.4f} seconds")
+    #
+    # # Printing best moves for comparison
+    # print(f"\nBest Move Column (ExpectiMinimax, AlphaBeta, MinMax): {best_move1.get_best_child_column()}, {best_move2.get_best_child_column()}, {best_move3.get_best_child_column()}")
+    # print("Alpha-Beta value ="+str(best_move2.get_value()))
+    # print("MinMax value ="+str(best_move3.get_value()))

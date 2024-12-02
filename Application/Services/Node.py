@@ -2,7 +2,7 @@ class Node:
     def __init__(self, column: int):
         self.__column: int = column
         self.__children: list[Node] = []
-        self.__value: float = 0
+        self.__value: float = float("-inf")
         self.__best_child_column: int = -1
         self.__nods_expanded: int = 0
 

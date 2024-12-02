@@ -14,8 +14,7 @@ def score():
         return jsonify({'error': 'Invalid request'}), 400
     board = data['board']
     piece = data['piece']
-    position = data['position']
-    return jsonify({'score': ScoreModule.get_action(board, position, piece)})
+    return jsonify({'score': ScoreModule.get_action(board, piece)})
 
 
 @main_routes.route('/ai', methods=['POST'])
