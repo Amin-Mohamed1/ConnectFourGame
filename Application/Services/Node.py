@@ -35,7 +35,6 @@ class Node:
 
     def to_dict(self) -> dict:
         return {
-            'column': self.__column,
             'value': self.__value,
             'best_child_column': self.__best_child_column,
             'children': [child.to_dict() for child in self.__children]

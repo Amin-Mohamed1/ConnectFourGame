@@ -5,9 +5,9 @@ export function renderAISelection(container) {
             <div class="sub-container">
                 <h1 class="subtitle">Play</h1>
                 <div class="button-container">
-                    <a href="#/game?method=1" class="btn btn-blue">Mini-Max</a>
-                    <a href="#/game?method=2" class="btn btn-red">Alpha-Beta pruning</a>
-                    <a href="#/game?method=3" class="btn btn-gold">Expectiminimax</a>
+                    <a href="#/depth-and-starter?method=1" class="btn btn-blue">Mini-Max</a>
+                    <a href="#/depth-and-starter?method=2" class="btn btn-red">Alpha-Beta pruning</a>
+                    <a href="#/depth-and-starter?method=3" class="btn btn-gold">Expectiminimax</a>
                 </div>
             </div>
         </div>

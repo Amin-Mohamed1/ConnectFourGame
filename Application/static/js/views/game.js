@@ -1,11 +1,11 @@
-export function renderGame(container, method) {
+export function renderGame(container, method, depth, starter) {
     const rows = 6;
     const cols = 7;
-    let currentPlayer = 1;
+    let currentPlayer = starter == 'ai'? 2 : 1
     let value1 = 0;
     let value2 = 0;
     let board = Array(rows).fill().map(() => Array(cols).fill(0));
-    let maxDepth = 4
+    let maxDepth = parseInt(depth, 10);
 
     function createBoard() {
         let boardHTML = '<div class="game-board">';
@@ -19,23 +19,20 @@ export function renderGame(container, method) {
     }
 
     async function handleCellClick(event) {
-        console.log(currentPlayer);
 
         const col = parseInt(event.target.dataset.col);
         if (!isValidMove(col)) return;
     
         const row = getLowestEmptyRow(col);
     
-        await getScore(col);
-                
         makeMove(row, col);
         updateBoard();
+
+        await getScore(col);
     
-        console.log(currentPlayer)
         if (method != 0) {
             await triggerAi();
         }
-        console.log(currentPlayer);
     }
 
     async function triggerAi() {
@@ -45,7 +42,6 @@ export function renderGame(container, method) {
             max_depth: maxDepth,
             method: convertMethodToStringFormat(method)
         };
-        console.log(requestData)
     
         try {
             const response = await fetch('http://127.0.0.1:5000/ai', {
@@ -64,14 +60,12 @@ export function renderGame(container, method) {
             const data = await response.json();
     
             const col = data.position;
-            console.log("columnnn: "+col)
 
-            // console.log(isValidMove(col))
-            // if (!isValidMove(col)) return;
+            if (!isValidMove(col)) return;
             const row = getLowestEmptyRow(col);
-            await getScore(col)
             makeMove(row, col);
             updateBoard();
+            await getScore(col)
 
         } catch (error) {
             console.error('Error making AI request:', error);
@@ -82,8 +76,7 @@ export function renderGame(container, method) {
     async function getScore(col) {
         const requestData = {
             board: convertBoardToCharachterFormat(board),
-            piece: convertPlayerToCharachterFormat(currentPlayer),
-            position: col
+            piece: convertPlayerToCharachterFormat(currentPlayer == 1? 2: 1),
         };
     
         try {
@@ -97,16 +90,15 @@ export function renderGame(container, method) {
     
             if (response.ok) {
                 const data = await response.json();
-                console.log('Score:', data.score);
                 if(currentPlayer == 2) {
-                    value1 += data.score
+                    value1 = data.score
                     if(method == 0) {
                         document.getElementById('player1-score').textContent = `Player1 Score: ${value1}`;
                     } else {
                         document.getElementById('player1-score').textContent = `Your Score: ${value1}`;
                     }
                 } else {
-                    value2 += data.score
+                    value2 = data.score
                     if(method == 0) {
                         document.getElementById('player2-score').textContent = `Player2 Score: ${value2}`;
                     } else {
@@ -136,7 +128,6 @@ export function renderGame(container, method) {
             }
     
             const data = await response.json();
-            console.log('Tree:', data.tree); // Process the tree data as needed
         } catch (error) {
             console.error('Error fetching tree:', error);
         }
@@ -154,8 +145,6 @@ export function renderGame(container, method) {
     }
 
     function makeMove(row, col) {
-        console.log("row: "+row)
-        console.log("col: "+col)
         board[row][col] = currentPlayer;
         currentPlayer = currentPlayer === 1 ? 2 : 1;
     }
@@ -201,7 +190,7 @@ export function renderGame(container, method) {
         } else if(method == 2) {
             return 'AlphaBeta';
         } else if(method == 3) {
-            return 'ExpectiMinMax';
+            return 'ExpectiiMinMax';
         }
     }
 
@@ -228,6 +217,10 @@ export function renderGame(container, method) {
 
         ${createBoard()}
     `;
+
+    if (currentPlayer == 2) {
+        triggerAi();
+    }
 
     const cells = container.querySelectorAll('.cell');
     cells.forEach(cell => {
