@@ -5,7 +5,7 @@ from Modules.AIModule import AIModule
 from Modules.ScoreModule import ScoreModule
 
 main_routes = Blueprint('main', __name__)
-
+ai_module = AIModule()
 
 @main_routes.route('/score', methods=['POST'])
 def score():
@@ -27,9 +27,8 @@ def ai():
     piece = data['piece']
     max_depth = data['max_depth']
     method = data['method']
-    return jsonify({'position': AIModule.get_action(board, piece, max_depth, method)})
+    return jsonify({'position': ai_module.get_action(board, piece, max_depth, method)})
 
 @main_routes.route('/tree', methods=['POST'])
 def tree():
-    ai_module = AIModule()
     return jsonify({'tree': ai_module.get_root().to_dict()})

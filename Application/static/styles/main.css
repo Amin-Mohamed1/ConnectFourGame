@@ -20,7 +20,6 @@ body {
 
 h1 {
     color: #F8F8FC;
-    margin-bottom: 1rem;
 }
 
 a {
@@ -43,10 +42,17 @@ h1.subtitle {
     color: #FFD634;
 }
 
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10rem;
+    transform: translateY(-5rem);
+}
+
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 6rem;
 }
 
 .btn {
@@ -62,17 +68,25 @@ h1.subtitle {
     filter: brightness(0.9);
 }
 
-.btn-pvp {
+.btn-red {
     background-color: #E94949;
 }
 
-.btn-ai {
+.btn-blue {
     background-color: #2F27CE;
 }
 
-.btn-expectiminimax {
+.btn-gold {
     background-color: #050316;
     border: 5px solid #FFD634;
+}
+
+.in-game-details {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    align-items: center;
 }
 
 .game-board {
@@ -82,6 +96,13 @@ h1.subtitle {
     padding: 1rem;
     background-color: #2F27CE;
     border-radius: 8px;
+}
+
+.players-status {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1rem;
 }
 
 .cell {
