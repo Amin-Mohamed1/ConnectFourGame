@@ -8,7 +8,7 @@ export function renderDepthAndStarter(container, method) {
 
                     <div class="custom-number-input">
                         <button id="decrement" type="button" aria-label="Decrease">-</button>
-                        <input type="number" id="depth" name="depth" min="1" max="43" value="5" readonly>
+                        <input type="number" id="depth" name="depth" min="1" max="42" value="5" readonly>
                         <button id="increment" type="button" aria-label="Increase">+</button>
                     </div>
 
