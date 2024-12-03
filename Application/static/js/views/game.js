@@ -18,9 +18,41 @@ export function renderGame(container, method, depth, starter) {
         return boardHTML;
     }
 
+    function generateUniformArray(size, currentValue) {
+        const array = [];
+        for (let i = 0; i < size; i++) {
+            let previous = currentValue - 1;
+            let next = currentValue + 1;
+          // Adjust the previous and next values to ensure they are valid moves
+            if (previous >= 0 && !isValidMove(previous)) previous = -1;
+            if (next <= 6 && !isValidMove(next)) next = 7;
+          // Handle boundary conditions
+            if (previous < 0 || next > 6) {
+            array.push(
+              ...Array(Math.ceil(size * 0.7)).fill(currentValue),
+              ...Array(Math.floor(size * 0.3)).fill(previous >= 0 ? previous : next)
+            );
+            break;
+            } else {
+            array.push(
+              ...Array(Math.ceil(size * 0.6)).fill(currentValue),
+              ...Array(Math.floor(size * 0.2)).fill(previous),
+              ...Array(Math.floor(size * 0.2)).fill(next)
+            );
+            break;
+            }
+        }
+        // Shuffle to simulate uniformity
+        return array.sort(() => Math.random() - 0.5);
+    }
+
     async function handleCellClick(event) {
 
-        const col = parseInt(event.target.dataset.col);
+        let col = parseInt(event.target.dataset.col);
+        if(method == 3) {
+            let x = generateUniformArray(10, col)
+            col = x[0]
+        }
         if (!isValidMove(col)) return;
     
         const row = getLowestEmptyRow(col);
