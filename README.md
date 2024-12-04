@@ -18,16 +18,6 @@ This repository contains **ConnectFourGame**, a web-based project developed usin
 
 ---
 
-### 🧠 **AI Capabilities**
-- **Minimax Algorithm**: Evaluates all possible moves to determine the best one.
-- **Alpha-Beta Pruning**: Enhances Minimax by pruning branches that don't need to be explored, improving efficiency.
-- **ExpectiMinimax**: Extends Minimax to handle stochastic elements by considering probabilistic outcomes.
-- **Depth-limited Search**: Limits the depth of the search tree to balance between computation time and decision accuracy.
-- **Heuristic Evaluation**: Custom heuristics to evaluate non-terminal game states, enhancing the AI's decision-making.
-- **Adaptive Difficulty**: Adjust AI difficulty by modifying the search depth and heuristic evaluation.
-
----
-
 ## **Technologies Used**
 - **Backend**: Flask (Python)
 - **Frontend**: HTML, CSS, JavaScript
